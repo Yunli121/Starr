@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👼 天使塔羅指引 - Star Oracle</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .angel-card-box {
+      width: 140px; height: 200px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px dashed var(--border-glow);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);
+    }
+    .angel-card-box .icon { font-size: 2.5rem; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>👼 天使塔羅每日指引</h1>
+    <p>接收來自大天使的高頻溫暖訊息與守護</p>
+  </header>
+
+  <main class="container">
+    <div class="glass-card" style="text-align: center;">
+      <h3>抽取你的今日守護天使卡</h3>
+      <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 5px;">請在心中默念你的問題，然後點擊下方按鈕</p>
+
+      <div class="angel-card-box" id="cardDisplay">
+        <span class="icon">✨</span>
+        <span style="font-size: 0.9rem; font-weight: bold;">天使卡牌</span>
+      </div>
+
+      <button class="btn-primary" onclick="drawAngelCard()" style="max-width: 250px; margin: 0 auto;">👼 抽取今日大天使指引</button>
+      
+      <div class="result-box" id="angelResult" style="margin-top: 20px; text-align: left; display: none;">
+        <!-- 抽牌結果會顯示在這裡 -->
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部共用導覽列 -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><span class="icon">🏠</span>首頁</a>
+    <a href="lenormand.html" class="nav-item"><span class="icon">🌸</span>雷諾曼</a>
+    <a href="angel.html" class="nav-item active"><span class="icon">👼</span>天使塔羅</a>
+    <a href="zodiac.html" class="nav-item"><span class="icon">⭐</span>星座運勢</a>
+  </nav>
+
+  <script>
+    // 天使塔羅資料庫範例
+    const angelDeck = [
+      { name: "大天使麥可", title: "勇敢前行與保護", desc: "你受到全方位的守護與引導。請放下恐懼，勇敢踏出你一直想做的那一步，宇宙會為你開路。" },
+      { name: "大天使拉斐爾", title: "身心靈的療癒與滋養", desc: "天使正在為你的身心注入療癒的綠光。多喝水、親近大自然，並允許自己好好休息，能量將重新充滿。" },
+      { name: "大天使加百列", title: "創造力與新方向", desc: "這是展現你真實想法與才華的時刻。不要懷疑自己的靈感，大膽把你的創意與計畫實現出來吧！" },
+      { name: "大天使約菲爾", title: "美化你的思想與環境", desc: "放慢腳步，欣賞身邊的美好。整理你的房間或辦公桌，當你的外在環境變得清爽，思緒也會隨之清晰。" },
+      { name: "大天使烏列爾", title: "智慧與清晰的洞察", desc: "當你感到迷惘時，內心其實早已有了答案。靜心聆聽你的直覺，智慧之光會照亮你的下一步。" }
+    ];
+
+    function drawAngelCard() {
+      const randomCard = angelDeck[Math.floor(Math.random() * angelDeck.length)];
+      
+      // 更新卡片外觀
+      const display = document.getElementById('cardDisplay');
+      display.style.background = "rgba(192, 132, 252, 0.15)";
+      display.style.border = "2px solid var(--accent-purple)";
+      display.innerHTML = `<span class="icon">🕊️</span><span style="font-size: 0.95rem; font-weight: bold; color: var(--accent-purple);">${randomCard.name}</span>`;
+
+      // 顯示詳細解讀
+      const resultBox = document.getElementById('angelResult');
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <h4 style="color: var(--accent-purple); margin-bottom: 8px;">✨ ${randomCard.name} — ${randomCard.title}</h4>
+        <p style="color: var(--text-main); font-size: 0.92rem; line-height: 1.6;">${randomCard.desc}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
