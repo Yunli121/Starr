@@ -3,47 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>👼 天使塔羅指引 - Star Oracle</title>
+  <title>👼 天使塔羅神諭 - Star Oracle</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .angel-card-box {
-      width: 140px; height: 200px;
-      margin: 20px auto;
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px dashed var(--border-glow);
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    /* 牌陣選擇標籤 */
+    .spread-select { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+    .chip { padding: 8px 16px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--text-sub); border: 1px solid var(--border-glow); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .chip.active { background: var(--accent-purple); color: #0f172a; font-weight: bold; border-color: var(--accent-purple); box-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
+
+    /* 卡牌容器 */
+    .angel-cards-flex { display: flex; justify-content: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+    
+    /* 玻璃質感卡片樣式 */
+    .angel-card-item {
+      width: 105px; height: 155px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid var(--accent-purple);
+      border-radius: 14px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: 10px 6px;
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.25);
       text-align: center;
-      padding: 15px;
-      box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);
+      transition: transform 0.2s;
     }
-    .angel-card-box .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .angel-card-item:hover { transform: translateY(-4px); }
+    
+    .angel-card-item .c-pos { font-size: 0.7rem; color: var(--text-sub); background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 6px; }
+    .angel-card-item .c-icon { font-size: 1.8rem; margin: 4px 0; }
+    .angel-card-item .c-name { font-size: 0.8rem; font-weight: bold; color: #fff; }
+    .angel-card-item .c-angel { font-size: 0.65rem; color: var(--accent-cyan); margin-top: 2px; }
+
+    /* 結果區 */
+    .result-box { margin-top: 20px; padding: 18px; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--accent-purple); border-radius: 16px; text-align: left; font-size: 0.92rem; line-height: 1.6; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>👼 天使塔羅每日指引</h1>
-    <p>接收來自大天使的高頻溫暖訊息與守護</p>
+    <h1>👼 天使塔羅神諭</h1>
+    <p>接收大天使與四大元素（龍族、人魚、獨角獸、精靈）的高頻指引</p>
   </header>
 
   <main class="container">
-    <div class="glass-card" style="text-align: center;">
-      <h3>抽取你的今日守護天使卡</h3>
-      <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 5px;">請在心中默念你的問題，然後點擊下方按鈕</p>
-
-      <div class="angel-card-box" id="cardDisplay">
-        <span class="icon">✨</span>
-        <span style="font-size: 0.9rem; font-weight: bold;">天使卡牌</span>
+    <div class="glass-card">
+      <!-- 牌陣選擇區 -->
+      <div class="spread-select">
+        <div class="chip active" onclick="switchSpread('single', this)">單張每日指引</div>
+        <div class="chip" onclick="switchSpread('timeline', this)">三張牌時間軸</div>
+        <div class="chip" onclick="switchSpread('mindbody', this)">身心靈整合</div>
       </div>
 
-      <button class="btn-primary" onclick="drawAngelCard()" style="max-width: 250px; margin: 0 auto;">👼 抽取今日大天使指引</button>
-      
-      <div class="result-box" id="angelResult" style="margin-top: 20px; text-align: left; display: none;">
-        <!-- 抽牌結果會顯示在這裡 -->
+      <div class="input-group">
+        <label style="display:block; font-size:0.85rem; color:var(--text-sub); margin-bottom:6px;">心中默念你的問題或祈願：</label>
+        <input type="text" id="angelQuestion" placeholder="例如：請指引我當前職涯發展方向..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; outline: none; margin-bottom: 15px;">
+      </div>
+
+      <button class="btn-primary" onclick="runAngelSpread()">✨ 開始抽取天使牌陣</button>
+
+      <!-- 卡牌展示區 -->
+      <div class="angel-cards-flex" id="angelCardsContainer">
+        <div class="angel-card-item">
+          <span class="c-pos">指引</span>
+          <div class="c-icon">🕊️</div>
+          <span class="c-name">請抽牌</span>
+        </div>
+      </div>
+
+      <!-- 解讀結果區 -->
+      <div class="result-box" id="angelResult">
+        請選擇上方牌陣並點擊按鈕，獲取天使的溫暖訊息。
       </div>
     </div>
   </main>
@@ -57,31 +85,88 @@
   </nav>
 
   <script>
-    // 天使塔羅資料庫範例
+    // 參考《天使塔羅牌》基本牌意建立之完整卡牌庫
     const angelDeck = [
-      { name: "大天使麥可", title: "勇敢前行與保護", desc: "你受到全方位的守護與引導。請放下恐懼，勇敢踏出你一直想做的那一步，宇宙會為你開路。" },
-      { name: "大天使拉斐爾", title: "身心靈的療癒與滋養", desc: "天使正在為你的身心注入療癒的綠光。多喝水、親近大自然，並允許自己好好休息，能量將重新充滿。" },
-      { name: "大天使加百列", title: "創造力與新方向", desc: "這是展現你真實想法與才華的時刻。不要懷疑自己的靈感，大膽把你的創意與計畫實現出來吧！" },
-      { name: "大天使約菲爾", title: "美化你的思想與環境", desc: "放慢腳步，欣賞身邊的美好。整理你的房間或辦公桌，當你的外在環境變得清爽，思緒也會隨之清晰。" },
-      { name: "大天使烏列爾", title: "智慧與清晰的洞察", desc: "當你感到迷惘時，內心其實早已有了答案。靜心聆聽你的直覺，智慧之光會照亮你的下一步。" }
+      // --- 大秘儀 ---
+      { name: "0. 夢想者", angel: "大天使麥達昶", icon: "🌌", keywords: "信念的躍進；追尋你的夢想；未預期的機會；有創意的解決之道；樂觀面對挑戰。" },
+      { name: "1. 魔法師", angel: "大天使拉吉爾", icon: "🪄", keywords: "你已經準備好了！表現你擁有的資源或能力；生命是神奇的；別耽擱了。" },
+      { name: "2. 女教皇", angel: "大天使漢尼爾", icon: "🌙", keywords: "聽從你的直覺；保持耐心；三思而後行；沈默是金；靈性方面的研究。" },
+      { name: "3. 皇后", angel: "大天使加百列", icon: "👑", keywords: "豐富富足；讓夢想起飛；滋養自己與他人；花時間接觸自然；藝術與創意。" },
+      { name: "4. 皇帝", angel: "大天使麥可", icon: "⚔️", keywords: "組織與邏輯；結構與紀律；領導力；成功的欲望；做聰明的決定。" },
+      { name: "5. 合一", angel: "大天使聖德芬", icon: "🕊️", keywords: "傳統的觀點或方式；尋找導師或知己；對生命意義的探索；信任團隊。" },
+      { name: "6. 戀人", angel: "大天使拉斐爾", icon: "💖", keywords: "親密關係；仔細衡量你的決定；健康與平衡的需求；和諧的夥伴關係。" },
+      { name: "7. 馬車", angel: "大天使麥達昶", icon: "🏆", keywords: "重要的成就；自我紀律和意志；公眾的認同；十足的毅力；大躍進。" },
+      { name: "8. 正義", angel: "大天使拉貴爾", icon: "⚖️", keywords: "公平且正義的決定；做自己認為對的事；為行為負責；堅持你的信念。" },
+      { name: "9. 隱者", angel: "大天使拉吉爾", icon: "🕯️", keywords: "花時間靜靜冥思；靈性教導；自我探索；好的建議；重新評估計畫。" },
+      { name: "10. 命運之輪", angel: "大天使麥可", icon: "🎡", keywords: "正面改變的時刻；突然而至的進展；好運站在你這邊！命運的轉折。" },
+      { name: "11. 力量", angel: "大天使亞列爾", icon: "🦁", keywords: "巨大的內在力量；釋放苛刻的評判；原諒與同情；耐心；以柔克剛。" },
+      { name: "12. 覺醒", angel: "大天使加百列", icon: "💡", keywords: "用不同觀點待事；做自己是最重要的事！暫時的停滯；需要保持耐心。" },
+      { name: "13. 釋放", angel: "大天使愛瑟瑞爾", icon: "🦋", keywords: "一個階段的結束；靈性的轉變；無可避免的正向變化；面對恐懼。" },
+      { name: "14. 平衡", angel: "大天使薩基爾", icon: "⚖️", keywords: "對平衡與適度的需求；合作與妥協；等待良好的時機；自我控制。" },
+      { name: "15. 自我", angel: "大天使約菲爾", icon: "鎖鏈", icon: "🔗", keywords: "虛假的安全感；過度追求物質；負面或恐懼的想法；需要破除依賴。" },
+      { name: "16. 生命經驗", angel: "大天使夏彌爾", icon: "⚡", keywords: "重要的生命事件；帶來改變的強大啓示；自由；突然看見真理。" },
+      { name: "17. 星星", angel: "大天使約菲爾", icon: "⭐", keywords: "快樂時光；正面樂觀的長期計畫；在正確的途徑上；信念與使命感。" },
+      { name: "18. 月亮", angel: "大天使漢尼爾", icon: "🌕", keywords: "重要的心靈啓發；表面背後的事實；釋放長久以來的恐懼；留意夢境。" },
+      { name: "19. 太陽", angel: "大天使烏列爾", icon: "☀️", keywords: "美滿的結果！引領成功的卓越新想法；對自己有信心！身心健全。" },
+      { name: "20. 復興", angel: "大天使耶力米爾", icon: "🎺", keywords: "回顧和評估；良好現實的評斷；是時候朝另一個方向前進；新開始。" },
+      { name: "21. 世界", angel: "大天使麥可", icon: "🌍", keywords: "一件工作將完成！喜悅、知足與感激；啟蒙之路；完美與圓滿。" },
+
+      // --- 小秘儀精選代表牌 ---
+      { name: "火之首 (龍族)", angel: "火元素", icon: "🐉", keywords: "令人興奮的新契機！職場風險；現在改變你的生活吧！開始新交易與企劃。" },
+      { name: "水之首 (人魚)", angel: "水元素", icon: "🧜‍♀️", keywords: "墜入愛河或舊情復燃；靈性和直覺成長；真摯的友誼；靈魂伴侶。" },
+      { name: "風之首 (獨角獸)", angel: "風元素", icon: "🦄", keywords: "傑出的新想法和靈感；看到事情的真相；充滿挑戰但充滿希望的開始。" },
+      { name: "土之首 (精靈)", angel: "土元素", icon: "🧝", keywords: "豐富的收入；商業承諾；重要的文件或合約；健康提升；絕佳好運。" },
+      { name: "水之九", angel: "水元素", icon: "✨", keywords: "你的希望成真了！擔憂消逝；對生命的熱愛；事情符合期待般明朗。" },
+      { name: "火之六", angel: "火元素", icon: "🚩", keywords: "勝利！好消息將至；眾人認同或奬勵；對自己感到滿意；極佳的好運。" }
     ];
 
-    function drawAngelCard() {
-      const randomCard = angelDeck[Math.floor(Math.random() * angelDeck.length)];
-      
-      // 更新卡片外觀
-      const display = document.getElementById('cardDisplay');
-      display.style.background = "rgba(192, 132, 252, 0.15)";
-      display.style.border = "2px solid var(--accent-purple)";
-      display.innerHTML = `<span class="icon">🕊️</span><span style="font-size: 0.95rem; font-weight: bold; color: var(--accent-purple);">${randomCard.name}</span>`;
+    let currentSpread = 'single';
 
-      // 顯示詳細解讀
-      const resultBox = document.getElementById('angelResult');
-      resultBox.style.display = "block";
-      resultBox.innerHTML = `
-        <h4 style="color: var(--accent-purple); margin-bottom: 8px;">✨ ${randomCard.name} — ${randomCard.title}</h4>
-        <p style="color: var(--text-main); font-size: 0.92rem; line-height: 1.6;">${randomCard.desc}</p>
-      `;
+    function switchSpread(spreadType, element) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      element.classList.add('active');
+      currentSpread = spreadType;
+    }
+
+    function getRandomCards(count) {
+      const shuffled = [...angelDeck].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function runAngelSpread() {
+      let count = 1;
+      let positions = ["今日指引"];
+
+      if (currentSpread === 'timeline') {
+        count = 3;
+        positions = ["過去影響", "當前狀態", "未來發展"];
+      } else if (currentSpread === 'mindbody') {
+        count = 3;
+        positions = ["身體 (Action)", "心智 (Mind)", "靈性 (Spirit)"];
+      }
+
+      const cards = getRandomCards(count);
+
+      // 渲染卡片畫面
+      document.getElementById('angelCardsContainer').innerHTML = cards.map((c, i) => `
+        <div class="angel-card-item">
+          <span class="c-pos">${positions[i]}</span>
+          <div class="c-icon">${c.icon}</div>
+          <span class="c-name">${c.name}</span>
+          <span class="c-angel">${c.angel}</span>
+        </div>
+      `).join('');
+
+      // 渲染文字分析
+      let resultHTML = `<h4 style="color: var(--accent-purple); margin-bottom: 12px;">✨ 您的天使塔羅牌陣靈性指引：</h4>`;
+      resultHTML += cards.map((c, i) => `
+        <div style="margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;">
+          • <b>【${positions[i]}】${c.name} （守護：${c.angel}）：</b><br>
+          <span style="color: var(--text-sub);">${c.keywords}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('angelResult').innerHTML = resultHTML;
     }
   </script>
 </body>
