@@ -3,149 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✨ 魚魚的雷諾曼神諭所 Star Oracle ✨</title>
+  <title>✨ 雷諾曼神諭所 ✨</title>
   <style>
     :root {
-      --bg-color: #f2f6fa;
+      --bg-color: #f7fbff;
       --card-bg: #ffffff;
-      --text-main: #2b3a4a;
-      --accent: #7ba4d5;
+      --text-main: #334155;
+      --accent: #93c5fd;
+      --accent-hover: #60a5fa;
       --border: #1e293b;
-      --yellow: #ffd166;
+      --yellow: #fde047;
+      --pink: #fbcfe8;
+      --shadow: 3px 3px 0px #1e293b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; max-width: 900px; margin: 0 auto; }
 
-    header { text-align: center; margin-bottom: 25px; }
+    header { text-align: center; margin-bottom: 20px; }
     h1 { font-size: 1.8rem; margin-bottom: 5px; color: var(--text-main); }
-    p.subtitle { font-size: 0.95rem; color: #64748b; }
+    p.subtitle { font-size: 0.9rem; color: #64748b; }
 
     /* 牌陣選單 */
     .spread-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
     .spread-btn {
       padding: 8px 14px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       border: 2px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: #ffffff;
       cursor: pointer;
-      box-shadow: 2px 2px 0px var(--border);
-      transition: all 0.15s ease;
+      box-shadow: var(--shadow);
+      transition: all 0.1s ease;
     }
     .spread-btn.active {
-      background: var(--accent);
-      color: #fff;
+      background: var(--yellow);
       transform: translate(-1px, -1px);
       box-shadow: 4px 4px 0px var(--border);
     }
 
     /* 內容面板 */
-    .panel { display: none; background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 4px 4px 0px var(--border); margin-bottom: 20px; }
+    .panel { display: none; background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 5px 5px 0px var(--border); margin-bottom: 20px; }
     .panel.active { display: block; }
 
-    h3 { margin-bottom: 10px; font-size: 1.2rem; }
-    .desc { font-size: 0.9rem; color: #555; margin-bottom: 15px; }
+    h3 { margin-bottom: 8px; font-size: 1.15rem; }
+    .desc { font-size: 0.85rem; color: #64748b; margin-bottom: 15px; }
 
     /* 輸入區 */
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-    .input-group input { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; }
+    .input-group { margin-bottom: 12px; }
+    .input-group label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
+    .input-group input { width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; background: #fafafa; }
 
     /* 抽牌按鈕 */
     .action-btn {
       padding: 10px 20px;
       border: 2px solid var(--border);
-      border-radius: 10px;
-      background: var(--yellow);
+      border-radius: 12px;
+      background: var(--accent);
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 3px 3px 0px var(--border);
+      box-shadow: var(--shadow);
       transition: all 0.1s;
     }
     .action-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--border); }
 
-    /* 卡牌容器 */
-    .cards-flex { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+    /* Q版塗鴉卡片樣式 */
+    .cards-flex { display: flex; justify-content: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
     .card-item {
-      width: 75px; height: 110px;
+      width: 85px; height: 120px;
       border: 2px solid var(--border);
-      border-radius: 8px;
-      background: #e2e8f0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 0.85rem;
-      box-shadow: 2px 2px 0px var(--border);
-      text-align: center; padding: 5px;
+      border-radius: 12px;
+      background: #ffffff;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      font-weight: bold; font-size: 0.8rem;
+      box-shadow: var(--shadow);
+      padding: 8px 4px;
+      position: relative;
+      transition: transform 0.2s;
     }
-    .card-item span.num { font-size: 0.7rem; color: #666; margin-bottom: 2px; }
+    .card-item:hover { transform: translateY(-3px); }
+    .card-item .c-num { font-size: 0.65rem; color: #94a3b8; background: #f1f5f9; padding: 1px 5px; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .card-item .c-icon { font-size: 1.8rem; margin: 4px 0; }
+    .card-item .c-name { font-size: 0.8rem; color: var(--text-main); }
 
     /* 九宮格與大藍圖排版 */
-    .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 300px; margin: 20px auto; }
-    .grid-3x3 .card-item { width: 100%; height: 95px; }
+    .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 320px; margin: 20px auto; }
+    .grid-3x3 .card-item { width: 100%; height: 105px; }
 
     .grid-grand { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; margin: 15px 0; overflow-x: auto; }
-    .grid-grand .card-item { width: 45px; height: 65px; font-size: 0.6rem; padding: 2px; }
+    .grid-grand .card-item { width: 50px; height: 75px; font-size: 0.55rem; padding: 3px 2px; }
+    .grid-grand .card-item .c-icon { font-size: 1.1rem; margin: 1px 0; }
 
     /* 結果區 */
-    .result-box { margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 10px; border: 1px dashed var(--border); text-align: left; font-size: 0.92rem; line-height: 1.5; }
+    .result-box { margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 14px; border: 2px dashed #cbd5e1; text-align: left; font-size: 0.9rem; line-height: 1.6; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>✨ 魚魚的雷諾曼神諭所 ✨</h1>
-    <p class="subtitle">精準、直覺的 36 張雷諾曼卡牌陣占卜</p>
+    <h1>✨ 魚魚的 Q 版雷諾曼神諭所 ✨</h1>
+    <p class="subtitle">療癒系手繪塗鴉風格卡牌占卜</p>
   </header>
 
-  <!-- 牌陣切換按鈕 -->
+  <!-- 牌陣選單 -->
   <div class="spread-nav">
     <button class="spread-btn active" onclick="switchSpread('p3')">3張牌線性</button>
     <button class="spread-btn" onclick="switchSpread('p5')">5張牌流向</button>
     <button class="spread-btn" onclick="switchSpread('choice')">二擇一</button>
     <button class="spread-btn" onclick="switchSpread('grid9')">3x3 九宮格</button>
-    <button class="spread-btn" onclick="switchSpread('grand')">大藍圖 (Grand Tableau)</button>
+    <button class="spread-btn" onclick="switchSpread('grand')">大藍圖全景</button>
   </div>
 
   <!-- 1. 三張牌線性 -->
   <div id="p3" class="panel active">
     <h3>🌸 三張牌線性牌陣</h3>
-    <p class="desc">適用於釐清事件的「過去 ➔ 現在 ➔ 未來」或「起因 過程 結果」。</p>
+    <p class="desc">釐清事件的「過去 ➔ 現在 ➔ 未來」發展脈絡。</p>
     <div class="input-group">
-      <label>你的心中疑問：</label>
-      <input type="text" id="q3" placeholder="例如：近期工作轉調的發展如何？">
+      <label>心中疑問：</label>
+      <input type="text" id="q3" placeholder="例如：近期工作狀態與發展？">
     </div>
     <button class="action-btn" onclick="run3Cards()">抽 3 張牌</button>
     <div class="cards-flex" id="cards3">
-      <div class="card-item">牌 1</div><div class="card-item">牌 2</div><div class="card-item">牌 3</div>
+      <div class="card-item"><span class="c-num">1</span><div class="c-icon">🌿</div><span class="c-name">請抽牌</span></div>
+      <div class="card-item"><span class="c-num">2</span><div class="c-icon">⭐</div><span class="c-name">請抽牌</span></div>
+      <div class="card-item"><span class="c-num">3</span><div class="c-icon">☕</div><span class="c-name">請抽牌</span></div>
     </div>
-    <div class="result-box" id="res3">請輸入問題並點擊抽牌。</div>
+    <div class="result-box" id="res3">請輸入問題並點擊抽牌按鈕。</div>
   </div>
 
   <!-- 2. 五張牌流向 -->
   <div id="p5" class="panel">
     <h3>🔮 五張牌能量流向牌陣</h3>
-    <p class="desc">深入剖析：1. 過去根源 2. 當前心境 3. 潛在阻礙 4. 關鍵建議 5. 最終發展。</p>
+    <p class="desc">深度剖析根源、心境、阻礙與最終結果。</p>
     <div class="input-group">
-      <label>你的心中疑問：</label>
-      <input type="text" id="q5" placeholder="例如：這段關係目前的走向與建議？">
+      <label>心中疑問：</label>
+      <input type="text" id="q5" placeholder="例如：這項計畫的進展與建議？">
     </div>
     <button class="action-btn" onclick="run5Cards()">抽 5 張牌</button>
     <div class="cards-flex" id="cards5">
-      <div class="card-item">1</div><div class="card-item">2</div><div class="card-item">3</div><div class="card-item">4</div><div class="card-item">5</div>
+      <div class="card-item"><span class="c-num">1</span><div class="c-icon">🌸</div><span class="c-name">根源</span></div>
+      <div class="card-item"><span class="c-num">2</span><div class="c-icon">💧</div><span class="c-name">心境</span></div>
+      <div class="card-item"><span class="c-num">3</span><div class="c-icon">☁️</div><span class="c-name">阻礙</span></div>
+      <div class="card-item"><span class="c-num">4</span><div class="c-icon">🗝️</div><span class="c-name">建議</span></div>
+      <div class="card-item"><span class="c-num">5</span><div class="c-icon">☀️</div><span class="c-name">結果</span></div>
     </div>
-    <div class="result-box" id="res5">請輸入問題並點擊抽牌。</div>
+    <div class="result-box" id="res5">請輸入問題並點擊抽牌按鈕。</div>
   </div>
 
   <!-- 3. 二擇一 -->
   <div id="choice" class="panel">
     <h3>⚖️ 二擇一決策牌陣</h3>
-    <p class="desc">比較兩個選項的發展與結局，幫助你做出更好的選擇。</p>
-    <div class="input-group"><label>選項 A 是：</label><input type="text" id="optA" placeholder="例如：留在原職"></div>
-    <div class="input-group"><label>選項 B 是：</label><input type="text" id="optB" placeholder="例如：接受新工作"></div>
+    <p class="desc">比較兩個選項的發展與核心關鍵。</p>
+    <div class="input-group"><label>選項 A：</label><input type="text" id="optA" placeholder="例如：留在原位"></div>
+    <div class="input-group"><label>選項 B：</label><input type="text" id="optB" placeholder="例如：接受新機會"></div>
     <button class="action-btn" onclick="runChoiceCards()">進行二擇一分析</button>
     <div class="cards-flex" id="cardsChoice">
-      <div class="card-item">選項A結果</div><div class="card-item">核心關鍵</div><div class="card-item">選項B結果</div>
+      <div class="card-item"><span class="c-num">選項A</span><div class="c-icon">⛵</div><span class="c-name">發展</span></div>
+      <div class="card-item"><span class="c-num">核心</span><div class="c-icon">💍</div><span class="c-name">關鍵</span></div>
+      <div class="card-item"><span class="c-num">選項B</span><div class="c-icon">🍀</div><span class="c-name">發展</span></div>
     </div>
     <div class="result-box" id="resChoice">填寫選項後點擊按鈕。</div>
   </div>
@@ -153,69 +169,66 @@
   <!-- 4. 九宮格 3x3 -->
   <div id="grid9" class="panel">
     <h3>🌟 3x3 九宮格牌陣</h3>
-    <p class="desc">綜合全貌解讀：中心第 5 張為核心，周圍 8 張卡牌互相對應與影響。</p>
+    <p class="desc">中心第 5 張為核心，周圍環繞全方位運勢。</p>
     <div class="input-group">
-      <label>你的心中疑問：</label>
-      <input type="text" id="q9" placeholder="例如：這段時期的整體運勢與核心課題？">
+      <label>心中疑問：</label>
+      <input type="text" id="q9" placeholder="例如：這段時期的整體能量？">
     </div>
     <button class="action-btn" onclick="runGrid9()">抽 9 張牌</button>
-    <div class="grid-3x3" id="cards9">
-      <!-- 產出 9 張 -->
-    </div>
+    <div class="grid-3x3" id="cards9"></div>
     <div class="result-box" id="res9">請點擊按鈕抽取九宮格。</div>
   </div>
 
   <!-- 5. 大藍圖 Grand Tableau -->
   <div id="grand" class="panel">
     <h3>🗺️ 大藍圖 Grand Tableau (36張全景)</h3>
-    <p class="desc">雷諾曼最經典的全盤展開（此處展示簡化抽樣與宮位對應總覽）。</p>
+    <p class="desc">雷諾曼最經典的全盤展開與宮位總覽。</p>
     <button class="action-btn" onclick="runGrandTableau()">展開 36 張大藍圖</button>
     <div class="grid-grand" id="cardsGrand"></div>
     <div class="result-box" id="resGrand">點擊按鈕查看全盤能量分佈。</div>
   </div>
 
   <script>
-    // 完整 36 張雷諾曼卡資料庫
+    // 完整 36 張雷諾曼卡（搭配 Q 版可愛 Icon 圖示與關鍵字）
     const lenormandDeck = [
-      { id: 1, name: "騎士", keywords: "消息、訪客、行動、新動向" },
-      { id: 2, name: "幸運草", keywords: "小確幸、幸運、短暫好運、轉機" },
-      { id: 3, name: "船", keywords: "旅行、遠行、進展、貿易、距離" },
-      { id: 4, name: "房舍", keywords: "家庭、房地產、安全感、內部" },
-      { id: 5, name: "樹", keywords: "健康、生命力、根基、長期發展" },
-      { id: 6, name: "雲", keywords: "混亂、不明朗、疑慮、暫時障礙" },
-      { id: 7, name: "蛇", keywords: "複雜、嫉妒、迂迴、智慧、女性" },
-      { id: 8, name: "棺材", keywords: "結束、轉折、轉化、休止符" },
-      { id: 9, name: "束花", keywords: "禮物、喜悅、美感、邀請、讚賞" },
-      { id: 10, name: "鐮刀", keywords: "突發切斷、決定、收穫、危險" },
-      { id: 11, name: "鞭子", keywords: "爭執、重複性、運動、壓力、摩擦" },
-      { id: 12, name: "鳥", keywords: "溝通、對話、焦慮、短途電話、八卦" },
-      { id: 13, name: "小孩", keywords: "新開始、純真、小孩、小型的事物" },
-      { id: 14, name: "狐狸", keywords: "工作、策略、小心心機、謀生" },
-      { id: 15, name: "熊", keywords: "力量、財務、主管、長輩、保護" },
-      { id: 16, name: "星星", keywords: "希望、靈感、願景、明確方向、星象" },
-      { id: 17, name: "鸛鳥", keywords: "搬遷、改變、調整、迎來新氣象" },
-      { id: 18, name: "狗", keywords: "忠誠、好友、夥伴、信賴的關係" },
-      { id: 19, name: "高塔", keywords: "機構、官方、孤立、遠見、法律" },
-      { id: 20, name: "花園", keywords: "社交、公眾場合、活動、聚會" },
-      { id: 21, name: "山", keywords: "阻礙、挑戰、跨越、遠方的高山" },
-      { id: 22, name: "十字路口", keywords: "選擇、分叉點、多種可能性" },
-      { id: 23, name: "老鼠", keywords: "壓力、消耗、流失、焦慮、小損失" },
-      { id: 24, name: "愛心", keywords: "愛情、情感、熱情、心意相通" },
-      { id: 25, name: "戒指", keywords: "承諾、合約、婚姻、循環、契約" },
-      { id: 26, name: "書", keywords: "秘密、學習、考試、專業知識、檔案" },
-      { id: 27, name: "信件", keywords: "公文、訊息、通知、文件、信函" },
-      { id: 28, name: "紳士", keywords: "男性當事人、伴侶、男性親友" },
-      { id: 29, name: "女士", keywords: "女性當事人、自我、女性親友" },
-      { id: 30, name: "百合", keywords: "成熟、平靜、家族、經驗、晚年" },
-      { id: 31, name: "太陽", keywords: "成功、極佳活力、光明、溫暖、能量" },
-      { id: 32, name: "月亮", keywords: "情感、潛意識、名望、直覺、夜晚" },
-      { id: 33, name: "鑰匙", keywords: "重要關鍵、解決方案、解開疑惑" },
-      { id: 34, name: "魚", keywords: "財富、金錢流動、商業、豐盛" },
-      { id: 35, name: "錨", keywords: "穩定、定居、長久工作、安全靠岸" },
-      { id: 36, name: "十字架", keywords: "宿命、重擔、信仰、必須承受的考驗" }
+      { id: 1, name: "騎士", icon: "🐎", keywords: "消息、訪客、行動、新動向" },
+      { id: 2, name: "幸運草", icon: "🍀", keywords: "小確幸、幸運、短暫好運、轉機" },
+      { id: 3, name: "船", icon: "⛵", keywords: "旅行、遠行、進展、貿易、距離" },
+      { id: 4, name: "房舍", icon: "🏠", keywords: "家庭、房地產、安全感、內部" },
+      { id: 5, name: "樹", icon: "🌳", keywords: "健康、生命力、根基、長期發展" },
+      { id: 6, name: "雲", icon: "☁️", keywords: "混亂、不明朗、疑慮、暫時障礙" },
+      { id: 7, name: "蛇", icon: "🐍", keywords: "複雜、嫉妒、迂迴、智慧、女性" },
+      { id: 8, name: "棺材", icon: "📦", keywords: "結束、轉折、轉化、休止符" },
+      { id: 9, name: "束花", icon: "💐", keywords: "禮物、喜悅、美感、邀請、讚賞" },
+      { id: 10, name: "鐮刀", icon: "✂️", keywords: "突發切斷、決定、收穫、危險" },
+      { id: 11, name: "鞭子", icon: "💫", keywords: "爭執、重複性、運動、壓力、摩擦" },
+      { id: 12, name: "鳥", icon: "🐦", keywords: "溝通、對話、焦慮、短途電話、八卦" },
+      { id: 13, name: "小孩", icon: "👶", keywords: "新開始、純真、小孩、小型的事物" },
+      { id: 14, name: "狐狸", icon: "🦊", keywords: "工作、策略、小心心機、謀生" },
+      { id: 15, name: "熊", icon: "🐻", keywords: "力量、財務、主管、長輩、保護" },
+      { id: 16, name: "星星", icon: "⭐", keywords: "希望、靈感、願景、明確方向、星象" },
+      { id: 17, name: "鸛鳥", icon: "🕊️", keywords: "搬遷、改變、調整、迎來新氣象" },
+      { id: 18, name: "狗", icon: "🐶", keywords: "忠誠、好友、夥伴、信賴的關係" },
+      { id: 19, name: "高塔", icon: "🏰", keywords: "機構、官方、孤立、遠見、法律" },
+      { id: 20, name: "花園", icon: "🌻", keywords: "社交、公眾場合、活動、聚會" },
+      { id: 21, name: "山", icon: "⛰️", keywords: "阻礙、挑戰、跨越、遠方的高山" },
+      { id: 22, name: "十字路口", icon: "🔀", keywords: "選擇、分叉點、多種可能性" },
+      { id: 23, name: "老鼠", icon: "🐭", keywords: "壓力、消耗、流失、焦慮、小損失" },
+      { id: 24, name: "愛心", icon: "💖", keywords: "愛情、情感、熱情、心意相通" },
+      { id: 25, name: "戒指", icon: "💍", keywords: "承諾、合約、婚姻、循環、契約" },
+      { id: 26, name: "書", icon: "📖", keywords: "秘密、學習、考試、專業知識、檔案" },
+      { id: 27, name: "信件", icon: "💌", keywords: "公文、訊息、通知、文件、信函" },
+      { id: 28, name: "紳士", icon: "🤵", keywords: "男性當事人、伴侶、男性親友" },
+      { id: 29, name: "女士", icon: "👩", keywords: "女性當事人、自我、女性親友" },
+      { id: 30, name: "百合", icon: "🌸", keywords: "成熟、平靜、家族、經驗、晚年" },
+      { id: 31, name: "太陽", icon: "☀️", keywords: "成功、極佳活力、光明、溫暖、能量" },
+      { id: 32, name: "月亮", icon: "🌙", keywords: "情感、潛意識、名望、直覺、夜晚" },
+      { id: 33, name: "鑰匙", icon: "🗝️", keywords: "重要關鍵、解決方案、解開疑惑" },
+      { id: 34, name: "魚", icon: "🐟", keywords: "財富、金錢流動、商業、豐盛" },
+      { id: 35, name: "錨", icon: "⚓", keywords: "穩定、定居、長久工作、安全靠岸" },
+      { id: 36, name: "十字架", icon: "✨", keywords: "宿命、重擔、信仰、必須承受的考驗" }
     ];
 
-    // 切換面板
     function switchSpread(id) {
       document.querySelectorAll('.spread-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -223,36 +236,39 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // 隨機抽牌工具
     function getRandomCards(count) {
       const shuffled = [...lenormandDeck].sort(() => 0.5 - Math.random());
       return shuffled.slice(0, count);
     }
 
+    function renderCardHTML(numStr, card) {
+      return `
+        <div class="card-item">
+          <span class="c-num">${numStr}</span>
+          <div class="c-icon">${card.icon}</div>
+          <span class="c-name">${card.name}</span>
+        </div>
+      `;
+    }
+
     // 1. 三張牌
     function run3Cards() {
       const cards = getRandomCards(3);
-      const positions = ["過去／起因", "現在／狀態", "未來／結果"];
+      const positions = ["過去", "現在", "未來"];
       
-      document.getElementById('cards3').innerHTML = cards.map((c, i) => 
-        `<div class="card-item"><span class="num">${i+1}. ${positions[i]}</span><b>${c.name}</b></div>`
-      ).join('');
-
+      document.getElementById('cards3').innerHTML = cards.map((c, i) => renderCardHTML(positions[i], c)).join('');
       document.getElementById('res3').innerHTML = `<b>💡 三張牌解讀分析：</b><br>` + 
-        cards.map((c, i) => `• <b>${positions[i]}（${c.name}）：</b>${c.keywords}`).join('<br>');
+        cards.map((c, i) => `• <b>${positions[i]}【${c.name} ${c.icon}】：</b>${c.keywords}`).join('<br>');
     }
 
     // 2. 五張牌
     function run5Cards() {
       const cards = getRandomCards(5);
-      const positions = ["1. 過去根源", "2. 當前心境", "3. 潛在阻礙", "4. 關鍵建議", "5. 最終發展"];
+      const positions = ["根源", "心境", "阻礙", "建議", "結果"];
 
-      document.getElementById('cards5').innerHTML = cards.map((c, i) => 
-        `<div class="card-item"><span class="num">${positions[i]}</span><b>${c.name}</b></div>`
-      ).join('');
-
+      document.getElementById('cards5').innerHTML = cards.map((c, i) => renderCardHTML(positions[i], c)).join('');
       document.getElementById('res5').innerHTML = `<b>💡 五張牌流向分析：</b><br>` + 
-        cards.map((c, i) => `• <b>${positions[i]}：${c.name}</b> — 核心意涵為 ${c.keywords}。`).join('<br>');
+        cards.map((c, i) => `• <b>${positions[i]}【${c.name} ${c.icon}】：</b>${c.keywords}`).join('<br>');
     }
 
     // 3. 二擇一
@@ -262,43 +278,39 @@
       const cards = getRandomCards(3);
 
       document.getElementById('cardsChoice').innerHTML = `
-        <div class="card-item"><span class="num">${optA}</span><b>${cards[0].name}</b></div>
-        <div class="card-item"><span class="num">核心關鍵</span><b>${cards[1].name}</b></div>
-        <div class="card-item"><span class="num">${optB}</span><b>${cards[2].name}</b></div>
+        ${renderCardHTML(optA, cards[0])}
+        ${renderCardHTML("關鍵", cards[1])}
+        ${renderCardHTML(optB, cards[2])}
       `;
 
       document.getElementById('resChoice').innerHTML = `
         <b>⚖️ 二擇一決策解讀：</b><br>
-        • <b>【${optA}】發展方向（${cards[0].name}）：</b> 走向偏向 ${cards[0].keywords}。<br>
-        • <b>【${optB}】發展方向（${cards[2].name}）：</b> 走向偏向 ${cards[2].keywords}。<br>
-        • <b>核心關鍵指引（${cards[1].name}）：</b> 建議審視 ${cards[1].keywords} 的影響。
+        • <b>【${optA}】走向（${cards[0].name} ${cards[0].icon}）：</b> ${cards[0].keywords}<br>
+        • <b>【${optB}】走向（${cards[2].name} ${cards[2].icon}）：</b> ${cards[2].keywords}<br>
+        • <b>核心指引（${cards[1].name} ${cards[1].icon}）：</b> ${cards[1].keywords}
       `;
     }
 
     // 4. 九宮格 3x3
     function runGrid9() {
       const cards = getRandomCards(9);
-      document.getElementById('cards9').innerHTML = cards.map((c, i) => 
-        `<div class="card-item"><span class="num">位 ${i+1}</span><b>${c.name}</b></div>`
-      ).join('');
+      document.getElementById('cards9').innerHTML = cards.map((c, i) => renderCardHTML(`位 ${i+1}`, c)).join('');
 
       document.getElementById('res9').innerHTML = `
         <b>🌟 3x3 九宮格中心核心解析：</b><br>
-        • <b>中心靈魂牌（第 5 張：${cards[4].name}）：</b> 代表目前問題的核心本質，關鍵在於「<b>${cards[4].keywords}</b>」。<br>
-        • <b>四周交織：</b> 周圍八張牌環繞著中心，反映出多方位的外部環境與心理狀態互動。
+        • <b>中心靈魂牌（第 5 張：${cards[4].name} ${cards[4].icon}）：</b> 核心本質在於「<b>${cards[4].keywords}</b>」。<br>
+        • 周圍八張牌環繞著中心，反映出全方位的能量互動與環境影響。
       `;
     }
 
     // 5. 大藍圖 Grand Tableau
     function runGrandTableau() {
       const fullDeck = [...lenormandDeck].sort(() => 0.5 - Math.random());
-      document.getElementById('cardsGrand').innerHTML = fullDeck.map((c, i) => 
-        `<div class="card-item"><span class="num">${i+1}</span><b>${c.name}</b></div>`
-      ).join('');
+      document.getElementById('cardsGrand').innerHTML = fullDeck.map((c, i) => renderCardHTML(`${i+1}`, c)).join('');
 
       document.getElementById('resGrand').innerHTML = `
         <b>🗺️ 大藍圖全盤檢視：</b><br>
-        • 已為您展開全部 36 張雷諾曼卡宮位。角落四張（第 1, 8, 29, 36 張）與中間四張（中宮核心）通常決定了全局的主要命題與近期的整體運勢走向。
+        • 已為您展開全部 36 張 Q 版雷諾曼卡宮位。角落四張與中宮核心將主導近期的整體運勢走向。
       `;
     }
   </script>
