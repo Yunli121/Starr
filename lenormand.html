@@ -6,34 +6,76 @@
   <title>🌸 雷諾曼神諭 - Star Oracle</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* 牌陣選擇標籤 */
     .spread-select { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
-    .chip { padding: 6px 14px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--text-sub); border: 1px solid var(--border-glow); font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
-    .chip.active { background: var(--accent-cyan); color: #0f172a; font-weight: bold; }
+    .chip { padding: 8px 16px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--text-sub); border: 1px solid var(--border-glow); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .chip.active { background: var(--accent-cyan); color: #0f172a; font-weight: bold; border-color: var(--accent-cyan); box-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
+
+    /* 卡牌容器 */
+    .cards-flex { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+    .card-item {
+      width: 90px; height: 130px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1.5px solid var(--border-glow);
+      border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: 8px 5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .card-item:hover { transform: translateY(-3px); }
+    .card-item .c-pos { font-size: 0.65rem; color: var(--text-sub); background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; }
+    .card-item .c-symbol { font-size: 1.6rem; margin: 4px 0; }
+    .card-item .c-name { font-size: 0.8rem; font-weight: bold; color: var(--text-main); }
+
+    /* 3x3 九宮格排版 */
+    .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 320px; margin: 20px auto; }
+    .grid-3x3 .card-item { width: 100%; height: 105px; }
+
+    /* 結果解析區 */
+    .result-box { margin-top: 20px; padding: 18px; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-glow); border-radius: 16px; text-align: left; font-size: 0.9rem; line-height: 1.6; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>🌸 雷諾曼卡占卜</h1>
-    <p>選取牌陣，直覺獲得事件脈絡</p>
+    <p>選取陣型，獲取具體事件脈絡與能量指引</p>
   </header>
 
   <main class="container">
     <div class="glass-card">
+      <!-- 牌陣切換 -->
       <div class="spread-select">
-        <div class="chip active">3張牌線性</div>
-        <div class="chip">5張牌流向</div>
-        <div class="chip">二擇一</div>
-        <div class="chip">3x3 九宮格</div>
+        <div class="chip active" onclick="switchSpread('p3', this)">3張牌線性</div>
+        <div class="chip" onclick="switchSpread('p5', this)">5張牌流向</div>
+        <div class="chip" onclick="switchSpread('choice', this)">二擇一決策</div>
+        <div class="chip" onclick="switchSpread('grid9', this)">3x3 九宮格</div>
       </div>
 
-      <input type="text" placeholder="請在此輸入你的問題..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 15px;">
-      
-      <button class="btn-primary" onclick="alert('抽牌功能運作中！')">✨ 開始洗牌與抽牌</button>
+      <!-- 動態輸入框區塊 -->
+      <div id="inputContainer" class="input-group">
+        <input type="text" id="userQuestion" placeholder="請在此輸入你的問題（例如：近期工作發展？）" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; outline: none; margin-bottom: 15px;">
+      </div>
+
+      <button class="btn-primary" onclick="drawCards()">✨ 開始洗牌與抽牌</button>
+
+      <!-- 卡牌呈現區 -->
+      <div id="cardsDisplayArea" class="cards-flex">
+        <div class="card-item"><span class="c-pos">1</span><div class="c-symbol">🌸</div><span class="c-name">請抽牌</span></div>
+        <div class="card-item"><span class="c-pos">2</span><div class="c-symbol">🌿</div><span class="c-name">請抽牌</span></div>
+        <div class="card-item"><span class="c-pos">3</span><div class="c-symbol">⭐</div><span class="c-name">請抽牌</span></div>
+      </div>
+
+      <!-- 結果展示區 -->
+      <div class="result-box" id="resultBox">
+        請點擊上方按鈕開始抽牌。
+      </div>
     </div>
   </main>
 
-  <!-- 底部導覽列 -->
+  <!-- 底部共用導覽列 -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item"><span class="icon">🏠</span>首頁</a>
     <a href="lenormand.html" class="nav-item active"><span class="icon">🌸</span>雷諾曼</a>
@@ -41,5 +83,126 @@
     <a href="zodiac.html" class="nav-item"><span class="icon">⭐</span>星座運勢</a>
   </nav>
 
+  <script>
+    // 完整 36 張雷諾曼卡資料庫
+    const lenormandDeck = [
+      { id: 1, name: "騎士", symbol: "🐎", keywords: "消息、訪客、行動、新動向" },
+      { id: 2, name: "幸運草", symbol: "🍀", keywords: "小確幸、幸運、短暫好運、轉機" },
+      { id: 3, name: "船", symbol: "⛵", keywords: "旅行、遠行、進展、貿易、距離" },
+      { id: 4, name: "房舍", symbol: "🏠", keywords: "家庭、房地產、安全感、內部" },
+      { id: 5, name: "樹", symbol: "🌳", keywords: "健康、生命力、根基、長期發展" },
+      { id: 6, name: "雲", symbol: "☁️", keywords: "混亂、不明朗、疑慮、暫時障礙" },
+      { id: 7, name: "蛇", symbol: "🐍", keywords: "複雜、嫉妒、迂迴、智慧、女性" },
+      { id: 8, name: "棺材", symbol: "📦", keywords: "結束、轉折、轉化、休止符" },
+      { id: 9, name: "束花", symbol: "💐", keywords: "禮物、喜悅、美感、邀請、讚賞" },
+      { id: 10, name: "鐮刀", symbol: "✂️", keywords: "突發切斷、決定、收穫、危險" },
+      { id: 11, name: "鞭子", symbol: "💫", keywords: "爭執、重複性、運動、壓力、摩擦" },
+      { id: 12, name: "鳥", symbol: "🐦", keywords: "溝通、對話、焦慮、短途電話、八卦" },
+      { id: 13, name: "小孩", symbol: "👶", keywords: "新開始、純真、小孩、小型的事物" },
+      { id: 14, name: "狐狸", symbol: "🦊", keywords: "工作、策略、小心心機、謀生" },
+      { id: 15, name: "熊", symbol: "🐻", keywords: "力量、財務、主管、長輩、保護" },
+      { id: 16, name: "星星", symbol: "⭐", keywords: "希望、靈感、願景、明確方向、星象" },
+      { id: 17, name: "鸛鳥", symbol: "🕊️", keywords: "搬遷、改變、調整、迎來新氣象" },
+      { id: 18, name: "狗", symbol: "🐶", keywords: "忠誠、好友、夥伴、信賴的關係" },
+      { id: 19, name: "高塔", symbol: "🏰", keywords: "機構、官方、孤立、遠見、法律" },
+      { id: 20, name: "花園", symbol: "🌻", keywords: "社交、公眾場合、活動、聚會" },
+      { id: 21, name: "山", symbol: "⛰️", keywords: "阻礙、挑戰、跨越、遠方的高山" },
+      { id: 22, name: "十字路口", symbol: "🔀", keywords: "選擇、分叉點、多種可能性" },
+      { id: 23, name: "老鼠", symbol: "🐭", keywords: "壓力、消耗、流失、焦慮、小損失" },
+      { id: 24, name: "愛心", symbol: "💖", keywords: "愛情、情感、熱情、心意相通" },
+      { id: 25, name: "戒指", symbol: "💍", keywords: "承諾、合約、婚姻、循環、契約" },
+      { id: 26, name: "書", symbol: "📖", keywords: "秘密、學習、考試、專業知識、檔案" },
+      { id: 27, name: "信件", symbol: "💌", keywords: "公文、訊息、通知、文件、信函" },
+      { id: 28, name: "紳士", symbol: "🤵", keywords: "男性當事人、伴侶、男性親友" },
+      { id: 29, name: "女士", symbol: "👩", keywords: "女性當事人、自我、女性親友" },
+      { id: 30, name: "百合", symbol: "🌸", keywords: "成熟、平靜、家族、經驗、晚年" },
+      { id: 31, name: "太陽", symbol: "☀️", keywords: "成功、極佳活力、光明、溫暖、能量" },
+      { id: 32, name: "月亮", symbol: "🌙", keywords: "情感、潛意識、名望、直覺、夜晚" },
+      { id: 33, name: "鑰匙", symbol: "🗝️", keywords: "重要關鍵、解決方案、解開疑惑" },
+      { id: 34, name: "魚", symbol: "🐟", keywords: "財富、金錢流動、商業、豐盛" },
+      { id: 35, name: "錨", symbol: "⚓", keywords: "穩定、定居、長久工作、安全靠岸" },
+      { id: 36, name: "十字架", symbol: "✨", keywords: "宿命、重擔、信仰、必須承受的考驗" }
+    ];
+
+    let currentMode = 'p3';
+
+    // 切換牌陣模式
+    function switchSpread(mode, elem) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      elem.classList.add('active');
+      currentMode = mode;
+
+      const inputArea = document.getElementById('inputContainer');
+      if (mode === 'choice') {
+        inputArea.innerHTML = `
+          <input type="text" id="optA" placeholder="選項 A（例如：留在原職）" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 8px;">
+          <input type="text" id="optB" placeholder="選項 B（例如：接受新工作）" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 15px;">
+        `;
+      } else {
+        inputArea.innerHTML = `
+          <input type="text" id="userQuestion" placeholder="請在此輸入你的問題..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; outline: none; margin-bottom: 15px;">
+        `;
+      }
+    }
+
+    // 洗牌抽牌工具
+    function getRandomCards(count) {
+      const shuffled = [...lenormandDeck].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    // 執行抽牌
+    function drawCards() {
+      let count = 3;
+      let positions = ["過去", "現在", "未來"];
+
+      if (currentMode === 'p5') {
+        count = 5;
+        positions = ["根源", "心境", "阻礙", "建議", "結果"];
+      } else if (currentMode === 'choice') {
+        count = 3;
+        const optA = document.getElementById('optA')?.value || "選項 A";
+        const optB = document.getElementById('optB')?.value || "選項 B";
+        positions = [optA, "核心關鍵", optB];
+      } else if (currentMode === 'grid9') {
+        count = 9;
+        positions = ["1", "2", "3", "4", "核心", "6", "7", "8", "9"];
+      }
+
+      const drawn = getRandomCards(count);
+      const displayArea = document.getElementById('cardsDisplayArea');
+
+      // 判斷是否為九宮格網格
+      if (currentMode === 'grid9') {
+        displayArea.className = "grid-3x3";
+      } else {
+        displayArea.className = "cards-flex";
+      }
+
+      // 渲染卡片
+      displayArea.innerHTML = drawn.map((c, i) => `
+        <div class="card-item">
+          <span class="c-pos">${positions[i]}</span>
+          <div class="c-symbol">${c.symbol}</div>
+          <span class="c-name">${c.name}</span>
+        </div>
+      `).join('');
+
+      // 渲染解讀結果
+      let resHTML = `<h4 style="color: var(--accent-cyan); margin-bottom: 12px;">✨ 牌陣分析解讀：</h4>`;
+      if (currentMode === 'grid9') {
+        resHTML += `• <b>中心核心牌（${drawn[4].name} ${drawn[4].symbol}）：</b> ${drawn[4].keywords}<br>`;
+        resHTML += `• 周圍八張卡牌相互影響，呈現全方位的狀態演變。`;
+      } else {
+        resHTML += drawn.map((c, i) => `
+          <div style="margin-bottom: 8px;">
+            • <b>【${positions[i]}】${c.name} ${c.symbol}：</b> ${c.keywords}
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('resultBox').innerHTML = resHTML;
+    }
+  </script>
 </body>
 </html>
