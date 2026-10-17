@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👼 天使塔羅神諭 - Star Oracle</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* 牌陣選擇標籤 */
+    .spread-select { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+    .chip { padding: 8px 16px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--text-sub); border: 1px solid var(--border-glow); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .chip.active { background: var(--accent-purple); color: #0f172a; font-weight: bold; border-color: var(--accent-purple); box-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
+
+    /* 卡牌容器 */
+    .angel-cards-flex { display: flex; justify-content: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+    
+    /* 玻璃質感卡片樣式 */
+    .angel-card-item {
+      width: 105px; height: 155px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid var(--accent-purple);
+      border-radius: 14px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: 10px 6px;
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.25);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .angel-card-item:hover { transform: translateY(-4px); }
+    
+    .angel-card-item .c-pos { font-size: 0.7rem; color: var(--text-sub); background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 6px; }
+    .angel-card-item .c-icon { font-size: 1.8rem; margin: 4px 0; }
+    .angel-card-item .c-name { font-size: 0.8rem; font-weight: bold; color: #fff; }
+    .angel-card-item .c-angel { font-size: 0.65rem; color: var(--accent-cyan); margin-top: 2px; }
+
+    /* 結果區 */
+    .result-box { margin-top: 20px; padding: 18px; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--accent-purple); border-radius: 16px; text-align: left; font-size: 0.92rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>👼 天使塔羅神諭</h1>
+    <p>收錄 78 張完整天使塔羅牌義與四大元素指引</p>
+  </header>
+
+  <main class="container">
+    <div class="glass-card">
+      <!-- 牌陣選擇區 -->
+      <div class="spread-select">
+        <div class="chip active" onclick="switchSpread('single', this)">單張每日指引</div>
+        <div class="chip" onclick="switchSpread('timeline', this)">三張牌時間軸</div>
+        <div class="chip" onclick="switchSpread('mindbody', this)">身心靈整合</div>
+      </div>
+
+      <div class="input-group">
+        <label style="display:block; font-size:0.85rem; color:var(--text-sub); margin-bottom:6px;">心中默念你的問題或祈願：</label>
+        <input type="text" id="angelQuestion" placeholder="例如：請指引我當前職涯發展方向..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; outline: none; margin-bottom: 15px;">
+      </div>
+
+      <button class="btn-primary" onclick="runAngelSpread()">✨ 開始抽取天使牌陣</button>
+
+      <!-- 卡牌展示區 -->
+      <div class="angel-cards-flex" id="angelCardsContainer">
+        <div class="angel-card-item">
+          <span class="c-pos">指引</span>
+          <div class="c-icon">🕊️</div>
+          <span class="c-name">請抽牌</span>
+        </div>
+      </div>
+
+      <!-- 解讀結果區 -->
+      <div class="result-box" id="angelResult">
+        請選擇上方牌陣並點擊按鈕，獲取天使的溫暖訊息。
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部共用導覽列 -->
+  <nav class="bottom-nav">
+    <a href="https://yunli121.github.io/Starr/index.html" class="nav-item"><span class="icon">🏠</span>首頁</a>
+    <a href="https://yunli121.github.io/Starr/lenormand.html" class="nav-item"><span class="icon">🌸</span>雷諾曼</a>
+    <a href="https://yunli121.github.io/Starr/angel.html" class="nav-item active"><span class="icon">👼</span>天使塔羅</a>
+    <a href="https://yunli121.github.io/Starr/zodiac.html" class="nav-item"><span class="icon">⭐</span>星座運勢</a>
+  </nav>
+
+  <script>
+    // 完整 78 張天使塔羅牌資料庫
+    const angelDeck = [
+      // === 大秘儀 (22張) ===
+      { name: "0. 夢想者", angel: "大天使麥達昶", icon: "🌌", keywords: "信念的躍進；追尋你的夢想；未預期的機會；有創意的解決之道；以樂觀態度面對挑戰。" },
+      { name: "1. 魔法師", angel: "大天使拉吉爾", icon: "🪄", keywords: "你已經準備好了！表現你擁有的資源或能力；生命是神奇的；專心努力會獲得未預期的幫助。" },
+      { name: "2. 女教皇", angel: "大天使漢尼爾", icon: "🌙", keywords: "聽從你的直覺；保持耐心；三思而後行；沈默是金；抱著夢想與希望；從感情狀況中學習。" },
+      { name: "3. 皇后", angel: "大天使加百列", icon: "👑", keywords: "豐富富足；讓夢想起飛；滋養自己與他人；花時間接觸自然；滿足於創意與藝術的事物上。" },
+      { name: "4. 皇帝", angel: "大天使麥可", icon: "⚔️", keywords: "組織與邏輯；結構與紀律；領導力；成功的欲望；做聰明的決定；提供安全感與穩定。" },
+      { name: "5. 合一", angel: "大天使聖德芬", icon: "🕊️", keywords: "傳統的觀點或方式；尋找導師或志同道合的知己；對生命意義的探索；信任團隊與組織。" },
+      { name: "6. 戀人", angel: "大天使拉斐爾", icon: "💖", keywords: "親密關係；仔細衡量你的決定；健康與平衡的需求；恢復健康；和諧的婚姻或夥伴關係。" },
+      { name: "7. 馬車", angel: "大天使麥達昶", icon: "🏆", keywords: "重要的成就；自我紀律和意志；公眾的認同；十足的毅力；大躍進；升遷或獎勵。" },
+      { name: "8. 正義", angel: "大天使拉貴爾", icon: "⚖️", keywords: "公平且正義的決定；做自己認為對的事；為行為負責；拒絕不正義；堅持信念。" },
+      { name: "9. 隱者", angel: "大天使拉吉爾", icon: "🕯️", keywords: "花時間靜靜冥思；靈性教導；自我探索；獲得好的建議；尋找導師；重新評估計畫。" },
+      { name: "10. 命運之輪", angel: "大天使麥可", icon: "🎡", keywords: "正面改變的時刻；突然而至的進展；好運站在你這邊！因果平衡；奇蹟與命運扭轉。" },
+      { name: "11. 力量", angel: "大天使亞列爾", icon: "🦁", keywords: "巨大的內在力量；釋放苛刻的評判；原諒與同情；堅信的勇氣；以柔性取代強勢。" },
+      { name: "12. 覺醒", angel: "大天使加百列", icon: "💡", keywords: "用不同觀點待事；做自己是最重要的事！顯靈；無私；需要保持耐心；異於以往的解法。" },
+      { name: "13. 釋放", angel: "大天使愛瑟瑞爾", icon: "🦋", keywords: "一個階段的結束；靈性的轉變；是時候進步了；無可避免的正向變化；面對恐懼。" },
+      { name: "14. 平衡", angel: "大天使薩基爾", icon: "⚖️", keywords: "對於平衡與適度的需求；合作與妥協；等待良好的時機；在行動與計畫間找到平衡。" },
+      { name: "15. 自我", angel: "大天使約菲爾", icon: "🔗", keywords: "一種虛假的安全感；過度追求物質；負面或恐懼的想法；拒絕面對現實或承擔責任。" },
+      { name: "16. 生命經驗", angel: "大天使夏彌爾", icon: "⚡", keywords: "重要的生命事件；帶來改變的強大啟示；張開翅膀飛翔；自由；突然看見真理。" },
+      { name: "17. 星星", angel: "大天使約菲爾", icon: "⭐", keywords: "快樂時光；正面樂觀的長期計畫；在正確的途徑上；信念；使命感；繁茂的新開始。" },
+      { name: "18. 月亮", angel: "大天使漢尼爾", icon: "🌕", keywords: "重要的心靈啟發；表面背後的事實；釋放長久以來的恐懼；留意夢境與直覺。" },
+      { name: "19. 太陽", angel: "大天使烏列爾", icon: "☀️", keywords: "美滿的結果！引領成功的卓越新想法；對自己有信心！愉悅；眾望所歸；身心健全。" },
+      { name: "20. 復興", angel: "大天使耶力米爾", icon: "🎺", keywords: "回顧和評估；良好現實的評斷；是時候朝另一個方向前進；重要的選擇與新開始。" },
+      { name: "21. 世界", angel: "大天使麥可", icon: "🌍", keywords: "一件工作將完成！喜悅、知足與感激；啟蒙之路；完美；獲得獎勵；完整且明確。" },
+
+      // === 火元素 / 龍族 (14張) ===
+      { name: "火一", angel: "火元素·龍族", icon: "🔥", keywords: "令人興奮的新契機！職場風險；現在改變你的生活；開始新交易；令人興奮的新資訊。" },
+      { name: "火二", angel: "火元素·龍族", icon: "🔥", keywords: "得到你值得的；新的合作關係或合約；繼續向前進步；超群遠見；掌控局勢。" },
+      { name: "火三", angel: "火元素·龍族", icon: "🔥", keywords: "豐足！萬事順遂；保持耐心；做長遠計畫；成長中的工作；擔任重要職位。" },
+      { name: "火四", angel: "火元素·龍族", icon: "🔥", keywords: "喜悅、和平與富足；快樂的家庭生活；成功完成計畫；職涯里程碑；給予祝福。" },
+      { name: "火五", angel: "火元素·龍族", icon: "🔥", keywords: "與他人競爭目標；麻煩的細節；與他人爭執；棘手的問題；需設立優先目標。" },
+      { name: "火六", angel: "火元素·龍族", icon: "🔥", keywords: "勝利！好消息將至；眾人認同或獎勵；對自己感到滿意；好運氣。" },
+      { name: "火七", angel: "火元素·龍族", icon: "🔥", keywords: "捍衛你的信念和決定；為自己挺身；學會說不；自信與勇氣；對抗權威。" },
+      { name: "火八", angel: "火元素·龍族", icon: "🔥", keywords: "計畫發展迅速；耽擱結束；許多事情同時發生；收到所需資訊；預料之外的成功。" },
+      { name: "火九", angel: "火元素·龍族", icon: "🔥", keywords: "別放棄；保護你所創造的；抱持勇氣然後相信自己；準備完善；生理力量。" },
+      { name: "火十", angel: "火元素·龍族", icon: "🔥", keywords: "工作過量；接受他人的幫助；生活失衡；壓力影響健康；黎明前的黑暗。" },
+      { name: "火侍從", angel: "火元素·龍族", icon: "🐉", keywords: "令人振奮的新工作消息；善用本質與機智；好消息；創新的計畫；相信自己。" },
+      { name: "火騎士", angel: "火元素·龍族", icon: "🐉", keywords: "需要伺機關照的臨時事件；善用時間；考量周全；燃起的熱情；喬遷或出差。" },
+      { name: "火皇后", angel: "火元素·龍族", icon: "🐉", keywords: "展翅高飛！別低估自己；堅持獨立與創造力；相信直覺；平衡家庭與事業。" },
+      { name: "火國王", angel: "火元素·龍族", icon: "🐉", keywords: "專注！與他人溝通並擔任領導者；聽從創新建議；團隊領導者；帶來改變。" },
+
+      // === 水元素 / 人魚 (14張) ===
+      { name: "水一", angel: "水元素·人魚", icon: "💧", keywords: "墜入愛河或舊情復燃；靈性和直覺成長；真摯的友誼；靈魂伴侶；同情和仁慈。" },
+      { name: "水二", angel: "水元素·人魚", icon: "💧", keywords: "持續親密的關係；原諒；爭吵過後的正面結果；戀愛；訂婚；分享想法。" },
+      { name: "水三", angel: "水元素·人魚", icon: "💧", keywords: "值得祝賀的事！婚禮、畢業或新生；享受更多樂事；共享好客；開心的結果。" },
+      { name: "水四", angel: "水元素·人魚", icon: "💧", keywords: "失去一個機會；不愉快或無趣；看向事物的可能性；白日夢；迷失在自己的世界。" },
+      { name: "水五", angel: "水元素·人魚", icon: "💧", keywords: "事情沒有朝希望的方向好轉；沒有抱持正向期待；覆水難收；傷心；關係結束。" },
+      { name: "水六", angel: "水元素·人魚", icon: "💧", keywords: "來自過去或童年的回憶；將過去浪漫化；繼承權；贈禮；團圓；展現仁慈。" },
+      { name: "水七", angel: "水元素·人魚", icon: "💧", keywords: "複雜的決定；需要研究；別再耽擱了！太多選擇；困惑與想像力奔馳。" },
+      { name: "水八", angel: "水元素·人魚", icon: "💧", keywords: "離開的欲望；追求有意義的事物；靈性與感性成長；決定離開痛苦狀態。" },
+      { name: "水九", angel: "水元素·人魚", icon: "💧", keywords: "你的希望成真了！擔憂消逝；對生命的熱愛；愉悅自由；事情符合期待地明朗。" },
+      { name: "水十", angel: "水元素·人魚", icon: "💧", keywords: "獲得滿意的家庭生活；情感與物質需求豐足；信賴的關係；快樂的婚姻。" },
+      { name: "水侍從", angel: "水元素·人魚", icon: "🧜‍♀️", keywords: "新對象進入生命；一段關係的新階段；提升靈通能力；情書；致力於藝術。" },
+      { name: "水騎士", angel: "水元素·人魚", icon: "🧜‍♀️", keywords: "談戀愛或求婚；情感平衡的需求；社交場會邀請；可以交談的對象；夢想家。" },
+      { name: "水皇后", angel: "水元素·人魚", icon: "🧜‍♀️", keywords: "關係進展到新階段；信任直覺；關心自己與他人；親密可靠的朋友；創意天分。" },
+      { name: "水國王", angel: "水元素·人魚", icon: "🧜‍♀️", keywords: "敞開心胸；可信任且衷心的建議；可信任的戀愛對象；調解人；正派角色。" },
+
+      // === 風元素 / 獨角獸 (14張) ===
+      { name: "風一", angel: "風元素·獨角獸", icon: "🍃", keywords: "傑出的新想法和靈感；看到事情的真相；充滿挑戰的開始；將負面轉為正面。" },
+      { name: "風二", angel: "風元素·獨角獸", icon: "🍃", keywords: "沒有做選擇的能力或意願；陷入僵局；假裝沒有問題；過度分析情事。" },
+      { name: "風三", angel: "風元素·獨角獸", icon: "🍃", keywords: "強烈的悲傷；花時間治癒；需要原諒自己或他人；誤會；關係問題。" },
+      { name: "風四", angel: "風元素·獨角獸", icon: "🍃", keywords: "休息或休假的時刻；需要更多時間做決定；冥想有助於解答；補充睡眠。" },
+      { name: "風五", angel: "風元素·獨角獸", icon: "🍃", keywords: "不明智的選擇；從事情中學到教訓；檢視每個人的動機；想報復的欲望。" },
+      { name: "風六", angel: "風元素·獨角獸", icon: "🍃", keywords: "事情明朗化！麻煩狀態的結束；一段旅程；從失望或生病中恢復；衝突解決。" },
+      { name: "風七", angel: "風元素·獨角獸", icon: "🍃", keywords: "需要再檢視計畫內容；事情不像看到的那樣簡單；缺乏時間；偏好獨自工作。" },
+      { name: "風八", angel: "風元素·獨角獸", icon: "🍃", keywords: "受困的錯覺；缺乏自信；害怕行動；困惑；感到無助；覺得自己是受害者。" },
+      { name: "風九", angel: "風元素·獨角獸", icon: "🍃", keywords: "負向期待；失眠；比較心態；擔憂；壓力導致疾病。" },
+      { name: "風十", angel: "風元素·獨角獸", icon: "🍃", keywords: "最壞的時刻過去；享受改變並期待往好的方向發展；除了進步沒有別的選擇。" },
+      { name: "風侍從", angel: "風元素·獨角獸", icon: "🦄", keywords: "挑戰的訊息；計畫延遲或改變；有建設性的評論；法律議題；新的挑戰。" },
+      { name: "風騎士", angel: "風元素·獨角獸", icon: "🦄", keywords: "快速到來的事件；花時間仔細檢視選擇；創新的解決方法；意外狀況或衝突。" },
+      { name: "風皇后", angel: "風元素·獨角獸", icon: "🦄", keywords: "客觀的決定；清除不再有幫助的東西；幽默待事；真實經驗的智慧。" },
+      { name: "風國王", angel: "風元素·獨角獸", icon: "🦄", keywords: "自信地說出真正所想；尋求專業建議；平衡心理與情緒；正義與和事老。" },
+
+      // === 土元素 / 精靈 (14張) ===
+      { name: "土一", angel: "土元素·精靈", icon: "🌱", keywords: "豐富的收入；商業上的承諾；重要檔案或合約；收到贈禮；健康提升；好運。" },
+      { name: "土二", angel: "土元素·精靈", icon: "🌱", keywords: "許多事同時發生；需要做決定；考慮更有效的方式；應對變化；平衡預算。" },
+      { name: "土三", angel: "土元素·精靈", icon: "🌱", keywords: "創造的力量；高質感的工作得到認同；團隊合作；工作進步；教授他人技術。" },
+      { name: "土四", angel: "土元素·精靈", icon: "🌱", keywords: "良好商業選擇；好的商業策略或投資；節儉；對資金管理需要精明。" },
+      { name: "土五", angel: "土元素·精靈", icon: "🌱", keywords: "對錢的恐懼；接受他人幫助的智慧；需要尋求援助；財務一時的阻礙。" },
+      { name: "土六", angel: "土元素·精靈", icon: "🌱", keywords: "金錢、時間或努力的禮物；新工作機會；借到貸款或償還債務；分享利潤。" },
+      { name: "土七", angel: "土元素·精靈", icon: "🌱", keywords: "種下良好的根基；行動暫時停止；毅力；達到里程碑；考慮新方式。" },
+      { name: "土八", angel: "土元素·精靈", icon: "🌱", keywords: "技術變得純熟；為了解奧秘而學習；技巧與勤勉；注意細節；重返學習。" },
+      { name: "土九", angel: "土元素·精靈", icon: "🌱", keywords: "享受生命中小小的奢華；獨自享受安靜時光；意外之財；受自然與動物感謝。" },
+      { name: "土十", angel: "土元素·精靈", icon: "🌱", keywords: "非常快樂的家庭時光；財務安全；發現生活中小事物的魔力；幸福與傳承。" },
+      { name: "土侍從", angel: "土元素·精靈", icon: "🧝", keywords: "經濟方面的好消息；等待更有挑戰的事；學習的新領域；超齡的智慧。" },
+      { name: "土騎士", angel: "土元素·精靈", icon: "🧝", keywords: "是時候定下心來完成事情了！實現承諾；守護天使；新的動力；持續豐足。" },
+      { name: "土皇后", angel: "土元素·精靈", icon: "🧝", keywords: "花時間與周遭人相處；合理的方法；溫暖通情達理；繁榮；愛護小孩與動物。" },
+      { name: "土國王", angel: "土元素·精靈", icon: "🧝", keywords: "成功的時刻；欣然接受機會；點石成金；財務安全；專業與負責。" }
+    ];
+
+    let currentSpread = 'single';
+
+    function switchSpread(spreadType, element) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      element.classList.add('active');
+      currentSpread = spreadType;
+    }
+
+    function getRandomCards(count) {
+      const shuffled = [...angelDeck].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function runAngelSpread() {
+      let count = 1;
+      let positions = ["今日指引"];
+
+      if (currentSpread === 'timeline') {
+        count = 3;
+        positions = ["過去影響", "當前狀態", "未來發展"];
+      } else if (currentSpread === 'mindbody') {
+        count = 3;
+        positions = ["身體 (Action)", "心智 (Mind)", "靈性 (Spirit)"];
+      }
+
+      const cards = getRandomCards(count);
+
+      // 渲染卡片畫面
+      document.getElementById('angelCardsContainer').innerHTML = cards.map((c, i) => `
+        <div class="angel-card-item">
+          <span class="c-pos">${positions[i]}</span>
+          <div class="c-icon">${c.icon}</div>
+          <span class="c-name">${c.name}</span>
+          <span class="c-angel">${c.angel}</span>
+        </div>
+      `).join('');
+
+      // 渲染文字分析
+      let resultHTML = `<h4 style="color: var(--accent-purple); margin-bottom: 12px;">✨ 您的天使塔羅牌陣靈性指引：</h4>`;
+      resultHTML += cards.map((c, i) => `
+        <div style="margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;">
+          • <b>【${positions[i]}】${c.name}（${c.angel}）：</b><br>
+          <span style="color: var(--text-sub);">${c.keywords}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('angelResult').innerHTML = resultHTML;
+    }
+  </script>
+</body>
+</html>
