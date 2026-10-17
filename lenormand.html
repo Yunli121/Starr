@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌸 雷諾曼神諭 - Star Oracle</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .spread-select { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+    .chip { padding: 6px 14px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--text-sub); border: 1px solid var(--border-glow); font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+    .chip.active { background: var(--accent-cyan); color: #0f172a; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌸 雷諾曼卡占卜</h1>
+    <p>選取牌陣，直覺獲得事件脈絡</p>
+  </header>
+
+  <main class="container">
+    <div class="glass-card">
+      <div class="spread-select">
+        <div class="chip active">3張牌線性</div>
+        <div class="chip">5張牌流向</div>
+        <div class="chip">二擇一</div>
+        <div class="chip">3x3 九宮格</div>
+      </div>
+
+      <input type="text" placeholder="請在此輸入你的問題..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 15px;">
+      
+      <button class="btn-primary" onclick="alert('抽牌功能運作中！')">✨ 開始洗牌與抽牌</button>
+    </div>
+  </main>
+
+  <!-- 底部導覽列 -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><span class="icon">🏠</span>首頁</a>
+    <a href="lenormand.html" class="nav-item active"><span class="icon">🌸</span>雷諾曼</a>
+    <a href="angel.html" class="nav-item"><span class="icon">👼</span>天使塔羅</a>
+    <a href="zodiac.html" class="nav-item"><span class="icon">⭐</span>星座運勢</a>
+  </nav>
+
+</body>
+</html>
